@@ -25,3 +25,8 @@ ___
                       |___________|
       
 ```
+
+### To test FastAPI
+```commandline
+fastapi dev
+```
