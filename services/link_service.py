@@ -1,6 +1,7 @@
 from database.models import Links
-from hashlib import sha256
-from datetime import datetime, timedelta
+import hashlib
+#from datetime import datetime, timedelta
+#from database.session import SessionLocal
 
 def getStringFromHash(hash) -> str:
     res = ""
@@ -12,7 +13,7 @@ def getStringFromHash(hash) -> str:
 
 # The function return shortened code for the given url
 def shortenUrl(url) -> str:
-    sha256 = sha256()
+    sha256 = hashlib.sha256()
     sha256.update(url)
     url_hash = sha256.hexdigest()
     result = getStringFromHash(url_hash)
@@ -21,6 +22,7 @@ def shortenUrl(url) -> str:
 
 # TODO: CHECK IF THE SHORTENED URL IS UNIQUE
 
-
-def link(url) -> str:
-    newUrl = shortenUrl(url)
+# # добавляем запись в бд, возвращаем короткий url, время
+# def link(url):
+#     newUrl = shortenUrl(url)
+    
