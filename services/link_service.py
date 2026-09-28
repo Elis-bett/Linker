@@ -2,6 +2,7 @@ from database.models import Links
 import hashlib
 #from datetime import datetime, timedelta
 #from database.session import SessionLocal
+from sqlalchemy.orm import Session
 
 def getStringFromHash(hash) -> str:
     res = ""
@@ -20,9 +21,14 @@ def shortenUrl(url) -> str:
     return result
 
 
-# TODO: CHECK IF THE SHORTENED URL IS UNIQUE
+# TODO: CHECK IF THE SHORTENED URL IS UNIQUE (возможно это надо будет в main все-таки реализовать)
 
 # # добавляем запись в бд, возвращаем короткий url, время
 # def link(url):
 #     newUrl = shortenUrl(url)
     
+def getOriginalUrl(db: Session, short: str) -> str:
+    result = db.query(Links).filter(Links.short == short).first()
+    #TODO: обработать если не нашли ссылку
+    #TODO: обработать проверку что ссылка не просрочилась (надо еще как-то удаление реализовать)
+    return result
