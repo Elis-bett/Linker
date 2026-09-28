@@ -8,4 +8,6 @@ class Links(Base):
     id = Column(Integer, primary_key=True)
     url = Column(String, primary_key=False, nullable=False)
     short = Column(String, primary_key=False, nullable=False)
+    created = Column(Date, primary_key=False, nullable=False)
     expired = Column(Date, primary_key=False, nullable=False)
+
