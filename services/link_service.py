@@ -1,6 +1,6 @@
 from database.models import Links
 import hashlib
-#from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 #from database.session import SessionLocal
 from sqlalchemy.orm import Session
 
@@ -12,6 +12,20 @@ def getStringFromHash(hash) -> str:
         j += 3
     return res
 
+
+def saveUrl(db: Session, url: str):
+    short = shortenUrl(url)
+    # TODO: CHECK IF THE SHORTENED URL IS UNIQUE (возможно это надо будет в main все-таки реализовать)
+    newLink = Links(url=url, short=short, created=datetime.now(), expired=datetime.now()+timedelta(days=5)) # MAGIC NUMBER потом убрать эту пятерку и сделать корректнее
+    db.add(newLink) #добавили
+    db.commit() #закоммитили
+    db.refresh(newLink) #сохранили в бд
+
+    return {
+        "original": url,
+        "short": short
+            }
+
 # The function return shortened code for the given url
 def shortenUrl(url) -> str:
     sha256 = hashlib.sha256()
@@ -21,11 +35,6 @@ def shortenUrl(url) -> str:
     return result
 
 
-# TODO: CHECK IF THE SHORTENED URL IS UNIQUE (возможно это надо будет в main все-таки реализовать)
-
-# # добавляем запись в бд, возвращаем короткий url, время
-# def link(url):
-#     newUrl = shortenUrl(url)
     
 def getOriginalUrl(db: Session, short: str) -> str:
     result = db.query(Links).filter(Links.short == short).first()

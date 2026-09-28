@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from database.session import SessionLocal
-from services.link_service import shortenUrl, getOriginalUrl
+from services.link_service import saveUrl, getOriginalUrl
 from datetime import datetime, timedelta
 
 app = FastAPI(title="Linker")
@@ -18,12 +18,10 @@ def get_db():
 
 @app.post("/short")
 async def short_url(url: str, db: Session = Depends(get_db)):
-    result = shortenUrl(url) # получаем из сервиса короткую запись 
+    result = saveUrl(db, url)# получаем из сервиса короткую запись 
     return {
-        "short": f"http://localhost:8000/{result['short_code']}",
-        "original": url,
-        "created": datetime.now(), #TODO:  нормально время создания, то же что и в бд записывается
-        "expires": datetime.now() + timedelta(days=5)
+        "short": f"http://localhost:8000/{result['short']}",
+        "original": url
     }
 
 
