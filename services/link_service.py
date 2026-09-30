@@ -29,7 +29,7 @@ def saveUrl(db: Session, url: str):
 # The function return shortened code for the given url
 def shortenUrl(url) -> str:
     sha256 = hashlib.sha256()
-    sha256.update(url)
+    sha256.update(url.encode("utf-8"))
     url_hash = sha256.hexdigest()
     result = getStringFromHash(url_hash)
     return result
@@ -40,4 +40,4 @@ def getOriginalUrl(db: Session, short: str) -> str:
     result = db.query(Links).filter(Links.short == short).first()
     #TODO: обработать если не нашли ссылку
     #TODO: обработать проверку что ссылка не просрочилась (надо еще как-то удаление реализовать)
-    return result
+    return result.url
