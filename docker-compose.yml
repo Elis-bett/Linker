@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: linker_db
+      POSTGRES_USER: linker_user
+      POSTGRES_PASSWORD: linker_password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linker_user -d linker_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: linker_db
+      DB_USER: linker_user
+      DB_PASSWORD: linker_password
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "python create_tables.py &&
+             uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
