@@ -26,8 +26,8 @@ async def short_url(url: str, db: Session = Depends(get_db)):
 
 
 # перекидываем на исходную ссылку по короткой
-@app.get("/{short}")
+@app.get("/{shortUrl}")
 async def redirect_url(shortUrl: str, db: Session = Depends(get_db)):
     originalUrl = getOriginalUrl(db, shortUrl)
     #TODO: обработать случай когда не нашли ссылку в бд
-    return {RedirectResponse(url=originalUrl, status_code=302)}
+    return RedirectResponse(url=originalUrl, status_code=302)
